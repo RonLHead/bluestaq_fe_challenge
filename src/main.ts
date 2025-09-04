@@ -3,35 +3,36 @@ import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
 
-// Rest call to title API endpoint
-fetch("https://poetrydb.org/author/Emily Dickinson/title")
-  .then((response) => {
-    // If response status isn't 200, throw error
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    response.json()
-      .then((titles) => {
-        console.log("Titles results:");
-        console.log(titles);
-        return;
-      })
-});
+/* 
+  Function that makes API rest calls to poetrydb.org author and title endpoints.
+  If either calls doesn't return a 200 status, the script consoles an error and returns null.
+  If both endpoint calls are successfull, both sets of data are consoled and both datasets
+  are returned as an array
+*/
 
-// Rest call to author API endpoint
-fetch('https://poetrydb.org/author')
-  .then((response) => {
-    // If response status isn't 200, throw error
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+const fetchPoetry = async () => {
+  try {
+    const authorsResponse = await fetch('https://poetrydb.org/author');
+    const titlesResposne = await fetch('https://poetrydb.org/title');
+    
+    if (!authorsResponse.ok || !titlesResposne.ok) {
+      console.error(`HTTP error, status code: ${authorsResponse.status || titlesResposne.status}`);
+      return null;
     }
-    response.json()
-      .then((authors) => {
-        console.log("Authors results:");
-        console.log(authors);
-        return;
-      })
-  })
+      const authorsData = await authorsResponse.json();
+      const titlesData = await titlesResposne.json();
+  
+      console.log("Authors API data: ", authorsData.authors)
+      console.log("Titles API data: ", titlesData.titles);
+
+      return [authorsData, titlesData];
+  } catch (error) {
+    console.error(`Error fetching poetry data: ${error}`);
+    return null;
+  }
+};
+
+await fetchPoetry();
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
