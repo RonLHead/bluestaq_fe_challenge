@@ -3,6 +3,36 @@ import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
 
+// Rest call to title API endpoint
+fetch("https://poetrydb.org/author/Emily Dickinson/title")
+  .then((response) => {
+    // If response status isn't 200, throw error
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    response.json()
+      .then((titles) => {
+        console.log("Titles results:");
+        console.log(titles);
+        return;
+      })
+});
+
+// Rest call to author API endpoint
+fetch('https://poetrydb.org/author')
+  .then((response) => {
+    // If response status isn't 200, throw error
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    response.json()
+      .then((authors) => {
+        console.log("Authors results:");
+        console.log(authors);
+        return;
+      })
+  })
+
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
     <a href="https://vite.dev" target="_blank">
@@ -22,3 +52,4 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `
 
 setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+
